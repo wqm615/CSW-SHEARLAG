@@ -5,28 +5,29 @@
 #include "matrix\matrix.h"
 #include "Mathfunc.h"
 using namespace std;
+int test;
 
-struct Citem    //Î¢·Ö·½³ÌµÄÏî
+struct Citem    //å¾®åˆ†æ–¹ç¨‹çš„é¡¹
 {
-	size_t var_index;  //±äÁ¿ĞòºÅ,´Ó1¿ªÊ¼Ëã
-	size_t order;      //±äÁ¿½×Êı
+	size_t var_index;  //å˜é‡åºå·,ä»1å¼€å§‹ç®—
+	size_t order;      //å˜é‡é˜¶æ•°
 	Citem(size_t _index=0,size_t _ord=0):var_index(_index),order(_ord){};
 };
 
-struct CitemB:public Citem  //±ß½ç·½³ÌµÄÏî
+struct CitemB:public Citem  //è¾¹ç•Œæ–¹ç¨‹çš„é¡¹
 {
-	size_t _index;  //ÀëÉ¢µãºÅ£¬´Ó1¿ªÊ¼
-	double _coef;  //ÏµÊı
+	size_t _index;  //ç¦»æ•£ç‚¹å·ï¼Œä»1å¼€å§‹
+	double _coef;  //ç³»æ•°
 	CitemB(size_t VarIndex,size_t _ord,size_t index,double coef):Citem(VarIndex,_ord),_index(index),_coef(coef){}
 	CitemB():_index(0),_coef(0){}
 };
 
-class Ceq  //Î¢·Ö·½³Ì
+class Ceq  //å¾®åˆ†æ–¹ç¨‹
 {
 public:
 	vector<Citem> _equ;
 private:
-	Cmatrix<double> _coef;   //ÏµÊıÒÔ¼°Öµ¾ØÕó£¬×îºóÒ»ÁĞÎªÖµ
+	Cmatrix<double> _coef;   //ç³»æ•°ä»¥åŠå€¼çŸ©é˜µï¼Œæœ€åä¸€åˆ—ä¸ºå€¼
 public:
 	Ceq(){};
 	Ceq(const vector<Citem>& equ,const Cmatrix<double> &coef):_equ(equ),_coef(coef){};
@@ -43,7 +44,7 @@ public:
 	friend class CeqSetD;
 };
 
-class CeqB   //±ß½ç·½³Ì
+class CeqB   //è¾¹ç•Œæ–¹ç¨‹
 {
 	vector<CitemB> _eqb;
 	double _rvalue;
@@ -70,13 +71,13 @@ protected:
 	vector<Ceq> _eqs;
 	Cmatrix<double> _mat;
 	Cmatrix<double> _rval;
-	Cmatrix<double> _rst;  //½á¹û
+	Cmatrix<double> _rst;  //ç»“æœ
 	Cmatrix<double> _rst_orig;
-	vector<vector<double> >_rst_expand; //Ô­Ê¼½â£¬¼´°üÀ¨À©ÕÅÊı¾İµã£¬¿ÉÓÃÓÚÇóÈÎÒâ½×µ¼Êı
+	vector<vector<double> >_rst_expand; //åŸå§‹è§£ï¼Œå³åŒ…æ‹¬æ‰©å¼ æ•°æ®ç‚¹ï¼Œå¯ç”¨äºæ±‚ä»»æ„é˜¶å¯¼æ•°
 protected:
-	vector<size_t> _VarDimon;  //´æ´¢±äÁ¿µÄ×î¸ß½×Êı
+	vector<size_t> _VarDimon;  //å­˜å‚¨å˜é‡çš„æœ€é«˜é˜¶æ•°
 private:
-	vector<size_t> _index;//±äÁ¿ÆğÊ¼µãÖ¸Ê¾Êı×é£¬ÁĞÊıÎª±äÁ¿Êı+1£¬×îºó1ÁĞÎª×Ü¸ÕµÄÁĞÊı
+	vector<size_t> _index;//å˜é‡èµ·å§‹ç‚¹æŒ‡ç¤ºæ•°ç»„ï¼Œåˆ—æ•°ä¸ºå˜é‡æ•°+1ï¼Œæœ€å1åˆ—ä¸ºæ€»åˆšçš„åˆ—æ•°
 public:
 	CeqSet(double delta=1.0):_delta(delta){};
 	void initilize(){_eqs.clear();_VarDimon.clear();_mat.clear();_rst_expand.clear();
@@ -91,13 +92,13 @@ public:
 		rst.assign(1,pos_dest,_rst.row(),pos_dest+_VarDimon.size()-1,_rst,1,pos_orig);
 	}
 private:
-	inline void CalcVarDimon(); //¼ÆËã±äÁ¿µÄ×î´ó½×Êı
+	inline void CalcVarDimon(); //è®¡ç®—å˜é‡çš„æœ€å¤§é˜¶æ•°
 private:
 	inline void CalcMat();
 public:
 	inline void Calculate();
 public:
-	inline bool CalcVarRst(size_t var_index,size_t ord,Cmatrix<double>&rst);  // ¼ÆËãÄ³±äÁ¿ÈÎÒâ½×µ¼Êı
+	inline bool CalcVarRst(size_t var_index,size_t ord,Cmatrix<double>&rst);  // è®¡ç®—æŸå˜é‡ä»»æ„é˜¶å¯¼æ•°
 	inline double CalcVarRst(size_t var_index,size_t ord,size_t index);
 	inline double check();
 };
@@ -109,25 +110,25 @@ void CeqSet::OutputAll(ostream& os)
 {
 	for(size_t i=0;i<_eqs.size();++i)
 	{
-		os<<"·½³Ì"<<i+1<<":\n";
+		os<<"æ–¹ç¨‹"<<i+1<<":\n";
 		_eqs[i].output(os);
 		os<<endl;
 	}
-	os<<"±ß½çÌõ¼ş:\n";
+	os<<"è¾¹ç•Œæ¡ä»¶:\n";
 	for(size_t i=0;i<_eqbs.size();++i) _eqbs[i].output(os);
-	os<<"\n±äÁ¿½×Êı:\n";
+	os<<"\nå˜é‡é˜¶æ•°:\n";
 	for(size_t i=0;i<_VarDimon.size();++i)
 		os<<_VarDimon[i]<<ends;
 	os<<endl;
-	os<<"\n±äÁ¿ÔÚ¾ØÕóÖĞµÄÎ»ÖÃ:\n";
+	os<<"\nå˜é‡åœ¨çŸ©é˜µä¸­çš„ä½ç½®:\n";
 	for(size_t i=0;i<_index.size();++i)
 		os<<_index[i]<<ends;
-	os<<endl<<"\n¾ØÕó:"<<endl;
+	os<<endl<<"\nçŸ©é˜µ:"<<endl;
 	os<<_mat;
-	os<<endl<<"\nÖµÏòÁ¿:"<<endl;
+	os<<endl<<"\nå€¼å‘é‡:"<<endl;
 	os<<_rval;
-	os<<endl<<"\nÔ­Ê¼½â£º"<<endl<<_rst_orig;
-	os<<endl<<"\nÀ©Õ¹½â:"<<endl;
+	os<<endl<<"\nåŸå§‹è§£ï¼š"<<endl<<_rst_orig;
+	os<<endl<<"\næ‰©å±•è§£:"<<endl;
 	for(size_t i=0;i<_rst_expand.size();++i)
 	{
 		for(size_t j=0;j<_rst_expand[i].size();++j)
@@ -136,14 +137,14 @@ void CeqSet::OutputAll(ostream& os)
 		}
 		os<<endl;
 	}
-	os<<endl<<"½â£º"<<endl;
+	os<<endl<<"è§£ï¼š"<<endl;
 	os<<_rst;
-	os<<endl<<"Ğ£ÑéÖµ£º"<<check();
+	os<<endl<<"æ ¡éªŒå€¼ï¼š"<<check();
 }
 
 void CeqSet::CalcVarDimon()
 {
-	size_t max_index=0;   //±äÁ¿¸öÊı
+	size_t max_index=0;   //å˜é‡ä¸ªæ•°
 	for(size_t i=0;i<_eqs.size();++i)
 	{
 		for(size_t j=0;j<_eqs[i]._equ.size();++j)
@@ -162,7 +163,7 @@ void CeqSet::CalcVarDimon()
 	}
 	_index.resize(_VarDimon.size()+1);
 	_index[0]=1;
-	const size_t VarNum=_eqs[0]._coef.row();  //×¢ÒâÃ¿¸ö·½³ÌµÄÀëÉ¢µãÊı±ØĞëÏàÍ¬
+	const size_t VarNum=_eqs[0]._coef.row();  //æ³¨æ„æ¯ä¸ªæ–¹ç¨‹çš„ç¦»æ•£ç‚¹æ•°å¿…é¡»ç›¸åŒ
 	for(size_t i=0;i<_VarDimon.size();++i)
 	{
 		_index[i+1]=_VarDimon[i]+VarNum+_index[i];
@@ -173,29 +174,29 @@ void CeqSet::CalcMat()
 {
 	_mat.clear();
 	_mat.resize(_index.back()-1,_index.back()-1,0);
-	vector<double> buffer;  //ÓÃÓÚ´æ´¢²î·ÖµÄÏµÊı
+	vector<double> buffer;  //ç”¨äºå­˜å‚¨å·®åˆ†çš„ç³»æ•°
 	const size_t VarNum=_eqs[0]._coef.row();
-	//Î¢·Ö·½³Ì
+	//å¾®åˆ†æ–¹ç¨‹
 	for(size_t i=0;i<_eqs.size();++i)
-	{   //·½³Ì
+	{   //æ–¹ç¨‹
 		for(size_t j=0;j<_eqs[i]._equ.size();++j)
-		{   //Ïî
+		{   //é¡¹
 			Diff(_eqs[i]._equ[j].order,buffer);
 			for(size_t k=0;k<VarNum;++k)
-			{   //ÀëÉ¢µã
+			{   //ç¦»æ•£ç‚¹
 				for(size_t kk=0;kk<buffer.size();++kk)
 					_mat(i*VarNum+k+1,_index[_eqs[i]._equ[j].var_index-1]+k+kk)+=buffer[kk]/pow(_delta,int(_eqs[i]._equ[j].order))*_eqs[i]._coef(k+1,j+1);
 			}
 		}
 	}
-	//±ß½çÌõ¼ş
+	//è¾¹ç•Œæ¡ä»¶
 	size_t pos=VarNum*_eqs.size()+1;
 	for(size_t i=0;i<_eqbs.size();++i)
 	{
-		//·½³Ì
+		//æ–¹ç¨‹
 		for(size_t j=0;j<_eqbs[i]._eqb.size();++j)
 		{
-			//Ïî
+			//é¡¹
 			Diff(_eqbs[i]._eqb[j].order,buffer);
 			for(size_t k=0;k<buffer.size();++k)
 			{
@@ -203,7 +204,7 @@ void CeqSet::CalcMat()
 			}
 		}
 	}
-	//·½³ÌÓÒ±ß
+	//æ–¹ç¨‹å³è¾¹
 	_rval.resize(_mat.row(),1);
 	pos=0;
 	for(size_t i=0;i<_eqs.size();++i)
